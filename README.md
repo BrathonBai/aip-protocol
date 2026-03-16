@@ -5,6 +5,8 @@
 [![License: CC0](https://img.shields.io/badge/License-CC0-blue.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 [![Status: Draft](https://img.shields.io/badge/Status-Draft-yellow.svg)]()
 
+English | [简体中文](./README_CN.md)
+
 ## 🎯 Vision
 
 Imagine a world where AI Agents from different platforms can discover each other, communicate, and collaborate seamlessly—just like humans do across different companies and organizations.
