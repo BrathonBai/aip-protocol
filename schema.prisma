@@ -1,0 +1,215 @@
+// Adventurer's Guild - Database Schema
+// PostgreSQL + Prisma ORM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户角色枚举
+enum UserRole {
+  HUMAN           // 人类冒险者
+  AGENT_OWNER     // AI Agent 拥有者
+}
+
+// 信誉等级
+enum ReputationLevel {
+  APPRENTICE      // 见习生
+  REGULAR         // 正式
+  ELITE           // 精英
+  LEGENDARY       // 传奇
+}
+
+// 任务状态
+enum QuestStatus {
+  PENDING_REVIEW  // 待审查
+  REVIEWING       // 审查中
+  PUBLISHED       // 已发布
+  IN_PROGRESS     // 进行中
+  IN_ARBITRATION  // 仲裁中
+  COMPLETED       // 已完成
+  REJECTED        // 已拒绝
+}
+
+// 目标执行者类型
+enum ExecutorType {
+  HUMAN
+  AGENT
+  HYBRID          // 人机协作
+}
+
+// 风险等级
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+// 争议状态
+enum DisputeStatus {
+  OPEN
+  VOTING
+  RESOLVED
+  ESCALATED
+}
+
+// 用户表
+model User {
+  id            String          @id @default(cuid())
+  email         String          @unique
+  username      String          @unique
+  role          UserRole
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  
+  // Agent 配置 (仅当 role = AGENT_OWNER 时有效)
+  agentConfig   AgentConfig?
+  
+  // 信誉系统
+  reputation    Reputation?
+  
+  // 关联关系
+  createdQuests Quest[]         @relation("QuestCreator")
+  assignedQuests Quest[]        @relation("QuestAssignee")
+  transactions  Transaction[]
+  disputes      Dispute[]       @relation("DisputeInitiator")
+  votes         JuryVote[]
+  
+  @@index([role])
+  @@index([username])
+}
+
+// Agent 配置
+model AgentConfig {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  modelType       String   // 例如: "gpt-4", "claude-3", "custom"
+  capabilities    String[] // 能力标签: ["coding", "writing", "analysis"]
+  sandboxTested   Boolean  @default(false)
+  testResults     Json?    // 沙盒测试结果
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// 信誉系统
+model Reputation {
+  id          String           @id @default(cuid())
+  userId      String           @unique
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  level       ReputationLevel  @default(APPRENTICE)
+  score       Int              @default(0)
+  badges      String[]         // 徽章列表: ["fast-responder", "quality-master"]
+  historyLog  Json[]           // 历史记录: [{date, action, scoreChange, reason}]
+  
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  
+  @@index([level])
+  @@index([score])
+}
+
+// 任务表
+model Quest {
+  id                  String        @id @default(cuid())
+  title               String
+  description         String        @db.Text
+  tags                String[]      // 技能标签
+  reward              Decimal       @db.Decimal(10, 2)
+  
+  status              QuestStatus   @default(PENDING_REVIEW)
+  targetExecutor      ExecutorType
+  
+  // 合法审查结果
+  legalCheckResult    Json?         // {is_approved, risk_level, reasoning, suggested_modifications}
+  
+  // 关联关系
+  creatorId           String
+  creator             User          @relation("QuestCreator", fields: [creatorId], references: [id])
+  
+  assigneeId          String?
+  assignee            User?         @relation("QuestAssignee", fields: [assigneeId], references: [id])
+  
+  transactions        Transaction[]
+  disputes            Dispute[]
+  
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  completedAt         DateTime?
+  
+  @@index([status])
+  @@index([targetExecutor])
+  @@index([creatorId])
+  @@index([assigneeId])
+}
+
+// 交易与托管
+model Transaction {
+  id              String    @id @default(cuid())
+  questId         String
+  quest           Quest     @relation(fields: [questId], references: [id], onDelete: Cascade)
+  
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  
+  amount          Decimal   @db.Decimal(10, 2)
+  status          String    // "ESCROWED", "RELEASED", "REFUNDED"
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([questId])
+  @@index([userId])
+  @@index([status])
+}
+
+// 争议与仲裁
+model Dispute {
+  id              String         @id @default(cuid())
+  questId         String
+  quest           Quest          @relation(fields: [questId], references: [id], onDelete: Cascade)
+  
+  initiatorId     String
+  initiator       User           @relation("DisputeInitiator", fields: [initiatorId], references: [id])
+  
+  reason          String         @db.Text
+  evidence        Json?          // 证据材料
+  status          DisputeStatus  @default(OPEN)
+  
+  // 陪审团投票
+  votes           JuryVote[]
+  
+  resolution      String?        @db.Text
+  resolvedAt      DateTime?
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  
+  @@index([questId])
+  @@index([status])
+}
+
+// 陪审团投票
+model JuryVote {
+  id          String    @id @default(cuid())
+  disputeId   String
+  dispute     Dispute   @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  
+  voterId     String
+  voter       User      @relation(fields: [voterId], references: [id])
+  
+  vote        String    // "APPROVE_CREATOR", "APPROVE_ASSIGNEE", "NEUTRAL"
+  reasoning   String?   @db.Text
+  
+  createdAt   DateTime  @default(now())
+  
+  @@unique([disputeId, voterId])
+  @@index([disputeId])
+}

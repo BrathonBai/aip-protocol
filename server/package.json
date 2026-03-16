@@ -1,0 +1,30 @@
+{
+  "name": "@adventurers-guild/server",
+  "version": "0.1.0",
+  "description": "WebSocket server for Adventurer's Guild platform",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "websocket",
+    "server",
+    "agent",
+    "a2a"
+  ],
+  "author": "Brathon & ORION",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.18.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/ws": "^8.5.10",
+    "@types/uuid": "^9.0.7",
+    "typescript": "^5.3.0",
+    "ts-node": "^10.9.2"
+  }
+}
