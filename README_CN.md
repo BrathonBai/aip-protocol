@@ -1,18 +1,33 @@
 # Agent Interoperability Protocol (AIP)
 # Agent 互操作性协议
 
-> **AI Agent 通信与协作的标准化协议**
+> **探索 AI Agent 通信的轻量级学习项目**
 
 [![License: CC0](https://img.shields.io/badge/License-CC0-blue.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
-[![Status: Draft](https://img.shields.io/badge/Status-Draft-yellow.svg)]()
+[![Status: Learning Project](https://img.shields.io/badge/Status-Learning%20Project-blue.svg)]()
 
 [English](./README.md) | 简体中文
+
+## ⚠️ 重要说明
+
+**这是一个学习项目。** 在启动这个项目后，我们发现了 [Google 的 A2A 协议](https://github.com/google/A2A)，这是一个由 Linux 基金会支持的成熟、生产就绪的解决方案。
+
+**我们推荐在生产环境中使用 Google A2A。**
+
+本项目将继续作为：
+- 📚 理解 Agent 通信的学习资源
+- 🔬 轻量级实验性实现
+- 🎯 构建简化 Agent 系统的基础
+
+我们将参考 Google A2A 的设计，并可能创建适用于特定场景的轻量级版本。
+
+---
 
 ## 🎯 愿景
 
 想象一个世界，不同平台的 AI Agent 可以互相发现、通信、无缝协作——就像人类跨公司、跨组织合作一样。
 
-**Agent Interoperability Protocol (AIP)** 让这一切成为可能。
+**Agent Interoperability Protocol (AIP)** 通过简单的教育性实现来探索这种可能性。
 
 ## 🚀 快速演示
 
@@ -52,23 +67,39 @@ designAgent.on('messageReceived', (msg) => {
 
 **结果**: 两个来自不同平台的 Agent 组成了团队！🤝
 
-## 🌟 为什么需要 AIP？
+## 🌟 为什么做这个项目？
 
-### 当前的问题
+### 学习目标
 
-- **Agent 孤岛**: 每个平台都有自己的专有 Agent 系统
-- **无法互操作**: Agent 无法跨平台通信
-- **重复造轮子**: 每个人都在重新发明相同的通信模式
-- **信任问题**: 没有标准方式验证 Agent 能力
-- **集成地狱**: 每个平台都需要自定义集成
+创建这个项目是为了：
+- 📚 **理解** Agent 通信模式
+- 🔬 **实验** 基于 WebSocket 的 Agent 消息传递
+- 🎓 **学习** 协议设计原则
+- 🛠️ **构建** 从零开始的工作原型
 
-### AIP 的解决方案
+### 与 Google A2A 的对比
 
-- ✅ **通用协议**: 所有平台的统一标准
-- ✅ **点对点**: Agent 直接通信，无需中间人
-- ✅ **基于能力**: Agent 声明自己能做什么
-- ✅ **信誉可携带**: 在一个平台建立信誉，到处使用
-- ✅ **简单且可扩展**: 易于实现，有成长空间
+在启动这个项目后，我们发现了 [Google 的 A2A 协议](https://github.com/google/A2A)，它要成熟得多：
+
+| 特性 | AIP (本项目) | Google A2A |
+|------|-------------|------------|
+| **成熟度** | 学习原型 | 生产就绪 |
+| **支持** | 个人项目 | Linux 基金会 |
+| **SDK** | 仅 TypeScript | Python, Go, JS, Java, .NET |
+| **协议** | 自定义 JSON | Protocol Buffers + JSON-RPC 2.0 |
+| **企业级** | ❌ | ✅ (认证、安全、可观测性) |
+| **文档** | 基础 | 完善 + DeepLearning.AI 课程 |
+| **使用场景** | 学习和实验 | 生产系统 |
+
+**建议**: 生产环境请使用 [Google A2A](https://github.com/google/A2A)。
+
+### 未来方向
+
+本项目将演化为：
+1. **教育资源** - 学习 Agent 通信的简单示例
+2. **轻量级替代** - 特定场景的最小化实现
+3. **实验平台** - 在 A2A 中实现之前测试想法
+4. **A2A 桥接** - 可能创建 Google A2A 的简化包装
 
 ## 📦 包含内容
 
@@ -266,24 +297,24 @@ Agent 声明自己能做什么：
 
 ## 🔗 相关项目
 
-- [Adventurer's Guild](https://github.com/BrathonBai/adventurers-guild) - 启发 AIP 的平台
+### 生产就绪的解决方案
+- **[Google A2A 协议](https://github.com/google/A2A)** ⭐ - 成熟的生产级 Agent 通信协议（推荐用于生产环境）
+- [Google A2A 文档](https://google.github.io/A2A/) - 官方文档和指南
+- [DeepLearning.AI A2A 课程](https://www.deeplearning.ai/) - 官方 A2A 使用教程
+
+### 其他项目
+- [Adventurer's Guild](https://github.com/BrathonBai/adventurers-guild) - 启发本项目的平台
 - [OpenClaw](https://openclaw.ai) - AI Agent 编排框架
 - [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT) - 自主 AI Agent
 - [LangChain](https://github.com/langchain-ai/langchain) - 使用 LLM 构建应用
 
-## 💡 为什么是现在？
+---
 
-AI Agent 的能力和采用率正在爆炸式增长。但如果没有互操作性，我们正在构建一个碎片化的生态系统。
+**由 Brathon & ORION 用 ❤️ 构建**
 
-**现在是标准化的时候了**——在每个平台都锁定到不兼容的系统之前。
+**状态**: 🎓 学习项目 - 探索 Agent 通信概念
 
-我们不是要取代现有的 Agent 框架，而是让它们能够协同工作。
-
-## 🎯 行动号召
-
-如果你正在构建 AI Agent，请：
-
-1. **阅读** [RFC](./RFC_AIP.md)
+**生产环境请考虑使用 [Google A2A](https://github.com/google/A2A)**
 2. **尝试** 参考实现
 3. **反馈** 在 GitHub 上
 4. **考虑** 在你的平台中实现 AIP
